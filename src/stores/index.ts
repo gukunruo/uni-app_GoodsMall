@@ -1,4 +1,6 @@
 import { createPinia } from 'pinia'
+// 引入pinia的持久化存储插件 用于在浏览器中持久化存储pinia状态
+// 插件默认使用localStorage 实现持久化 引入之后需要在配置中进行配置修改为uni.setStorageSync
 import persist from 'pinia-plugin-persistedstate'
 
 // 创建 pinia 实例
