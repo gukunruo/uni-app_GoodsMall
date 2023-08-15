@@ -6,6 +6,8 @@ import { onLoad } from '@dcloudio/uni-app'
 import { getHomeBannerAPI, getHomeCategoryAPI, getHomeHotAPI } from '@/services/home'
 // 引入ts类型
 import type { BannerItem, CategoryItem, HotItem } from '@/types/home.d.ts'
+// 引入组件实例的ts类型
+import type { HwGuessInstance } from '@/types/components.d.ts'
 // 引入顶部客制化导航栏组件
 import CustomNavBar from './components/CustomNavBar.vue'
 // 引入未全局引入的组件
@@ -39,13 +41,21 @@ onLoad(() => {
   getCategoryData()
   getHomeHotData()
 })
+
+// 拿到guess组件 guess组件没有类型校验
+const guessRef = ref<HwGuessInstance>()
+// 滚动栏触底函数
+const onScrolltolower = () => {
+  // 调用guess组件的getMore方法
+  guessRef.value?.getMore()
+}
 </script>
 
 <template>
   <!-- 此时与默认导航栏冲突，需要在pages.json中进行配置 -->
   <CustomNavBar />
-  <!-- 设置滚动容器 -->
-  <scroll-view class="scrollView" scroll-y>
+  <!-- 设置滚动容器 添加滚动触底事件scrolltolower -->
+  <scroll-view @scrolltolower="onScrolltolower" class="scrollView" scroll-y>
     <!-- 引入自动全局引入的轮播图组件
       注意：自动导入的组件没有定义ts类型，需要我们进行类型声明 -->
     <HwSwiper :List="bannerList" />
@@ -53,7 +63,7 @@ onLoad(() => {
     <CategoryPanel :list="categoryList" />
     <HotPanel :list="hotList" />
     <!-- 引入自动引入组件 猜你喜欢 -->
-    <HwGuess />
+    <HwGuess ref="guessRef" />
   </scroll-view>
 </template>
 

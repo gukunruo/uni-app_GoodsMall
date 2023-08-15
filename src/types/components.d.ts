@@ -14,4 +14,7 @@ declare module 'vue' {
   }
 }
 
-// 组件实例类型
+// HwGuess、HwSwiper组件的实例类型 在ref拿到组件实例时使用
+// 使用InstanceType拿到实例的类型【里面传入的是组件类型，不是实例类型】
+export type HwGuessInstance = InstanceType<typeof HwGuess>
+export type HwSwiperInstance = InstanceType<typeof HwSwiper>
