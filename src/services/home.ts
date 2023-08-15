@@ -37,13 +37,14 @@ export const getHomeHotAPI = () => {
   })
 }
 
-// 首页-猜你喜欢-小程序
+// 首页-猜你喜欢-小程序 传入请求数据data PageParams类型就包含我们需要的page和pageSize
 export const getHomeGoodsGuessLikeAPI = (data?: PageParams) => {
   // 这里的泛型 用于对类型进行嵌套 将GuessItem类型传入PageResult的泛型参数组成新的类型
   // 然后将新组成的ts类型传给封装的http请求中的泛型参数
   return http<PageResult<GuessItem>>({
     method: 'GET',
     url: '/home/goods/guessLike',
+    // request请求中的请求参数就是 data
     data,
   })
 }

@@ -1,13 +1,37 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import type { GuessItem } from '@/types/home.d.ts'
+import type { PageParams } from '@/types/global'
 import { getHomeGoodsGuessLikeAPI } from '@/services/home'
+
+// 定义分页参数 传入请求中获取对应页码的数据
+// Required<PageParams> 替换 PageParams 用于解决 pageParams.page++ 报错问题
+// 因为pageParams中的page和pageSize后有"?"可选符，在这里需要用Required改为必选[去掉了?]
+const pageParams: Required<PageParams> = {
+  page: 1,
+  pageSize: 10,
+}
+// 是否结束标记
+let finish = ref<boolean>(false)
 // 存储列表数据
 let guessList = ref<GuessItem[]>([])
 const getHomeGoodsGuessLikeData = async () => {
-  const res = await getHomeGoodsGuessLikeAPI()
+  // 数据加载完判断
+  if (finish.value == true) {
+    return uni.showToast({ icon: 'none', title: '没有更多数据~' })
+  }
+  const res = await getHomeGoodsGuessLikeAPI(pageParams)
   // 这里的res.result不止包含列表的数据 还包含counts、page[当前]、pages[总页数]、pageSize
-  guessList.value = res.result.items
+  // guessList.value = res.result.items
+  // 将赋值改为追加数据
+  guessList.value.push(...res.result.items)
+  // 加载新数据的条件 页码累加条件
+  if (pageParams.page < res.result.pages) {
+    // 页码累加，再次请求时获取新的数据
+    pageParams.page++ // 必须在上面改为必选 因为可选类型没数据为undefined，不能++
+  } else {
+    finish.value = true
+  }
 }
 
 // 组件挂载完毕时调用
@@ -44,7 +68,7 @@ defineExpose({
     </navigator>
   </view>
   <!-- 加载显示文字 -->
-  <view class="loading-text"> 正在加载... </view>
+  <view class="loading-text">{{ finish ? '没有更多数据~' : '正在加载...' }}</view>
 </template>
 
 <style lang="scss">
