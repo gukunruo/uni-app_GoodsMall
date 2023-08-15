@@ -1,6 +1,6 @@
 // 定义全局引入组件的ts类型
 // 引入需要全局引入的组件 为其获取ts类型
-import HwSwiper from './HwSwiper.vue'
+import HwSwiper from '@/components/HwSwiper.vue'
 
 // Volar官网固定写法
 declare module 'vue' {

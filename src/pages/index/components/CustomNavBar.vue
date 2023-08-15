@@ -10,7 +10,7 @@ const { safeAreaInsets } = uni.getSystemInfoSync() // 带Sync是同步api 不带
   <view class="navbar" :style="{ paddingTop: safeAreaInsets?.top + 10 + 'px' }">
     <!-- logo文字 -->
     <view class="logo">
-      <image class="logo-image" src="@/static/images/logo.png"></image>
+      <image class="logo-image" src="@/static/images/优选好物.png"></image>
       <text class="logo-text">新鲜 · 亲民 · 快捷</text>
     </view>
     <!-- 搜索条 -->
@@ -37,7 +37,8 @@ const { safeAreaInsets } = uni.getSystemInfoSync() // 带Sync是同步api 不带
     padding-left: 30rpx;
     .logo-image {
       width: 166rpx;
-      height: 39rpx;
+      // height: 39rpx; logo.png
+      height: 100rpx;
     }
     .logo-text {
       flex: 1;

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { BannerItem } from '@/types/home'
 import { ref } from 'vue'
 
 // 定义激活时的下标
@@ -11,6 +12,12 @@ const onChange: UniHelper.SwiperOnChange = (event) => {
   activeIndex.value = event.detail!.current
   // ts中的"!"为非空断言[从值域中排除null和undefined]，主观上排除掉空值情况
 }
+
+// 接收父组件传来的数据 并指定泛型【setup中defineProps不需引入】
+defineProps<{
+  list: BannerItem[]
+}>()
+// defineProps使用了TypeScript中的泛型语法，用于接收父组件传递的props数据，并为其提供类型定义
 </script>
 <!-- 这是一个封装的轮播图组件 需要在pages.json中easycom配置自动引入全局组件 -->
 <template>
@@ -18,33 +25,11 @@ const onChange: UniHelper.SwiperOnChange = (event) => {
   <view class="carousel">
     <!-- 图片区域
       swiper @change：current[当前所在滑块的 index]改变时会触发 change 事件 -->
-    <swiper :circular="true" :autoplay="false" :interval="3000" @change="onChange">
+    <swiper circular :autoplay="false" :interval="3000" @change="onChange">
       <!-- 图片项 -->
-      <swiper-item>
+      <swiper-item v-for="item in list" :key="item.id">
         <navigator url="/pages/index/index" hover-class="none" class="navigator">
-          <image
-            mode="aspectFill"
-            class="image"
-            src="https://pcapi-xiaotuxian-front-devtest.itheima.net/miniapp/uploads/slider_1.jpg"
-          ></image>
-        </navigator>
-      </swiper-item>
-      <swiper-item>
-        <navigator url="/pages/index/index" hover-class="none" class="navigator">
-          <image
-            mode="aspectFill"
-            class="image"
-            src="https://pcapi-xiaotuxian-front-devtest.itheima.net/miniapp/uploads/slider_2.jpg"
-          ></image>
-        </navigator>
-      </swiper-item>
-      <swiper-item>
-        <navigator url="/pages/index/index" hover-class="none" class="navigator">
-          <image
-            mode="aspectFill"
-            class="image"
-            src="https://pcapi-xiaotuxian-front-devtest.itheima.net/miniapp/uploads/slider_3.jpg"
-          ></image>
+          <image mode="aspectFill" class="image" :src="item.imgUrl"></image>
         </navigator>
       </swiper-item>
     </swiper>
@@ -53,8 +38,8 @@ const onChange: UniHelper.SwiperOnChange = (event) => {
       <!-- text组件模拟指示点
         active是自定义高亮样式【当循环下标index和activeIndex激活时的下标相等时激活】 -->
       <text
-        v-for="(item, index) in 3"
-        :key="item"
+        v-for="(item, index) in list"
+        :key="item.id"
         class="dot"
         :class="{ active: index === activeIndex }"
       ></text>
@@ -67,6 +52,7 @@ const onChange: UniHelper.SwiperOnChange = (event) => {
   display: block;
   height: 280rpx;
 }
+
 /* 轮播图 */
 .carousel {
   height: 100%;
@@ -74,6 +60,7 @@ const onChange: UniHelper.SwiperOnChange = (event) => {
   overflow: hidden;
   transform: translateY(0);
   background-color: #efefef;
+
   .indicator {
     position: absolute;
     left: 0;
@@ -81,6 +68,7 @@ const onChange: UniHelper.SwiperOnChange = (event) => {
     bottom: 16rpx;
     display: flex;
     justify-content: center;
+
     .dot {
       width: 30rpx;
       height: 6rpx;
@@ -88,10 +76,12 @@ const onChange: UniHelper.SwiperOnChange = (event) => {
       border-radius: 6rpx;
       background-color: rgba(255, 255, 255, 0.4);
     }
+
     .active {
       background-color: #fff;
     }
   }
+
   .navigator,
   .image {
     width: 100%;
