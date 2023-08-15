@@ -28,6 +28,7 @@ const { safeAreaInsets } = uni.getSystemInfoSync() // 带Sync是同步api 不带
   background-size: cover;
   position: relative;
   display: flex;
+  // 设置弹性盒主轴 默认为row 从左到右 还可取row-reverse、column[-reverse]
   flex-direction: column;
   padding-top: 20px;
   .logo {
@@ -62,11 +63,14 @@ const { safeAreaInsets } = uni.getSystemInfoSync() // 带Sync是同步api 不带
     border-radius: 32rpx;
     background-color: rgba(255, 255, 255, 0.5);
   }
+  // 设置文字前的搜索icon
   .icon-search {
+    // .icon-search::before
     &::before {
       margin-right: 10rpx;
     }
   }
+  // 扫描二维码icon
   .icon-scan {
     font-size: 30rpx;
     padding: 15rpx;

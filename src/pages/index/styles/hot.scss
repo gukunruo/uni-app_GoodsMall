@@ -1,0 +1,60 @@
+/* 热门推荐 */
+.hot {
+  display: flex;
+  // 浮动块自动换行
+  flex-wrap: wrap;
+  min-height: 508rpx;
+  margin: 20rpx 20rpx 0;
+  border-radius: 10rpx;
+  background-color: #fff;
+
+  // 标题块
+  .title {
+    // 浮动块内设置浮动
+    display: flex;
+    align-items: center;
+    padding: 24rpx 24rpx 0;
+    font-size: 32rpx;
+    color: #262626;
+    position: relative;
+    // 标题描述
+    .title-desc {
+      font-size: 24rpx;
+      color: #7f7f7f;
+      margin-left: 18rpx;
+    }
+  }
+
+  // 产品块
+  .item {
+    // 浮动块内设置浮动
+    display: flex;
+    // 浮动方向竖方向
+    flex-direction: column;
+    width: 50%;
+    height: 254rpx;
+    border-right: 1rpx solid #eee;
+    border-top: 1rpx solid #eee;
+    .title {
+      justify-content: start;
+    }
+    // .item:nth-child(2n)
+    &:nth-child(2n) {
+      border-right: 0 none;
+    }
+    &:nth-child(-n + 2) {
+      border-top: 0 none;
+    }
+    .image {
+      width: 150rpx;
+      height: 150rpx;
+    }
+  }
+  .cards {
+    flex: 1;
+    padding: 15rpx 20rpx;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

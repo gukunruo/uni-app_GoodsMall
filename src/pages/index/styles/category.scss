@@ -1,0 +1,32 @@
+/* 前台类目 */
+.category {
+  margin: 20rpx 0 0;
+  padding: 10rpx 0;
+  display: flex;
+  // 浮动自动换行 用于响应式
+  flex-wrap: wrap;
+  min-height: 328rpx;
+
+  .category-item {
+    width: 150rpx;
+    /* 图标和文字上下浮动 */
+    display: flex;
+    // 主轴对其
+    justify-content: center;
+    // 主轴方向 上往下
+    flex-direction: column;
+    // 侧轴居中
+    align-items: center;
+    // 设置盒子尺寸 = border+padding+content
+    box-sizing: border-box;
+    // 图标大小
+    .icon {
+      width: 100rpx;
+      height: 100rpx;
+    }
+    .text {
+      font-size: 26rpx;
+      color: #666;
+    }
+  }
+}
