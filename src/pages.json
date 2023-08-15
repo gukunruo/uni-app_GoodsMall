@@ -7,7 +7,9 @@
     "custom": {
       // uni-ui规则如下配置
       // 将符合前面正则的【uni-开头】文件提取出来放到后面"$1"的位置组成包的路径  // [!code ++]
-      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue" // [!code ++]
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue", // [!code ++]
+      //  以 Hw(好物) 开头的组件，在 components 目录中查找（需要重启服务）
+      "^Hw(.*)": "@/components/Hw$1.vue"
     }
   },
   // 路由
@@ -16,6 +18,10 @@
     {
       "path": "pages/index/index",
       "style": {
+        // 设置隐藏默认导航栏 设置navigationStyle为客制化样式即可
+        "navigationStyle": "custom",
+        // 同时修改上面系统电量、时间等字体和图标颜色的样式
+        "navigationBarTextStyle": "white",
         "navigationBarTitleText": "首页"
       }
     },
@@ -38,13 +44,14 @@
       }
     }
   ],
+  // 全局样式
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "",
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   },
-  // 设置 TabBar
+  // 设置底部导航栏 TabBar
   "tabBar": {
     "color": "#333",
     "selectedColor": "#27ba9b",

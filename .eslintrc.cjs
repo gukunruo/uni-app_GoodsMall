@@ -11,21 +11,25 @@ module.exports = {
   ],
   // 小程序全局变量
   globals: {
+    // 支持uni和微信
     uni: true,
     wx: true,
     WechatMiniprogram: true,
     getCurrentPages: true,
     UniHelper: true,
   },
+  // 解析器选项
   parserOptions: {
+    // 指定ecma版本为最新版本
     ecmaVersion: 'latest',
   },
+  // 具体校验规则
   rules: {
     'prettier/prettier': [
       'warn',
       {
         singleQuote: true,
-        semi: false,
+        semi: false, // 不用分号
         printWidth: 100,
         trailingComma: 'all',
         endOfLine: 'auto',
