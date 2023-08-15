@@ -43,15 +43,29 @@ onLoad(() => {
 <template>
   <!-- 此时与默认导航栏冲突，需要在pages.json中进行配置 -->
   <CustomNavBar />
-  <!-- 引入自动全局引入的轮播图组件
-    注意：自动导入的组件没有定义ts类型，需要我们进行类型声明 -->
-  <HwSwiper :List="bannerList" />
-  <!-- 下面的组件不是Hw开头的组件，需要自行引入 -->
-  <CategoryPanel :list="categoryList" />
-  <HotPanel :list="hotList" />
-  <view class="index"></view>
+  <!-- 设置滚动容器 -->
+  <scroll-view class="scrollView" scroll-y>
+    <!-- 引入自动全局引入的轮播图组件
+      注意：自动导入的组件没有定义ts类型，需要我们进行类型声明 -->
+    <HwSwiper :List="bannerList" />
+    <!-- 下面的组件不是Hw开头的组件，需要自行引入 -->
+    <CategoryPanel :list="categoryList" />
+    <HotPanel :list="hotList" />
+    <!-- 引入自动引入组件 猜你喜欢 -->
+    <HwGuess />
+  </scroll-view>
 </template>
 
 <style lang="scss">
-//
+// page相当于body节点
+page {
+  background-color: #f7f7f7;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+// 这样做是为了让顶部导航栏不固定在最上方，滚动栏进行滚动
+.scrollView {
+  flex: 1;
+}
 </style>
