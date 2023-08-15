@@ -1,5 +1,19 @@
 <script setup lang="ts">
-//
+import { ref, onMounted } from 'vue'
+import type { GuessItem } from '@/types/home.d.ts'
+import { getHomeGoodsGuessLikeAPI } from '@/services/home'
+// 存储列表数据
+let guessList = ref<GuessItem[]>([])
+const getHomeGoodsGuessLikeData = async () => {
+  const res = await getHomeGoodsGuessLikeAPI()
+  // 这里的res.result不止包含列表的数据 还包含counts、page[当前]、pages[总页数]、pageSize
+  guessList.value = res.result.items
+}
+
+// 组件挂载完毕时调用
+onMounted(() => {
+  getHomeGoodsGuessLikeData()
+})
 </script>
 
 <template>
@@ -11,21 +25,17 @@
   <view class="guess">
     <navigator
       class="guess-item"
-      v-for="item in 10"
-      :key="item"
-      :url="`/pages/goods/goods?id=4007498`"
+      v-for="item in guessList"
+      :key="item.id"
+      :url="`/pages/goods/goods?id=${item.id}`"
     >
       <!-- 图片 -->
-      <image
-        class="image"
-        mode="aspectFill"
-        src="https://pcapi-xiaotuxian-front-devtest.itheima.net/miniapp/uploads/goods_big_1.jpg"
-      ></image>
+      <image class="image" mode="aspectFill" :src="item.picture"></image>
       <!-- 商品名称+描述 -->
-      <view class="name"> 德国THORE男表 超薄手表男士休闲简约夜光石英防水直径40毫米</view>
+      <view class="name"> {{ item.name }}</view>
       <view class="price">
         <text class="small">¥</text>
-        <text>899.00</text>
+        <text>{{ item.price }}</text>
       </view>
     </navigator>
   </view>
@@ -68,6 +78,7 @@
 
 /* 猜你喜欢具体商品 */
 .guess {
+  // 需要给列表信息的容器开启浮动
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;

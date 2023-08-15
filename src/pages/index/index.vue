@@ -31,6 +31,7 @@ const getHomeHotData = async () => {
   const res = await getHomeHotAPI()
   hotList.value = res.result
 }
+// 猜你喜欢组件不需要在此处封装调用 直接在组件内部调用更好 因为大部分数据复用时是相同的
 
 // 加载时调用api
 onLoad(() => {
