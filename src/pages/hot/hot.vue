@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
+// 引入api和ts类型
+import { getHotRecommendAPI } from '@/services/hot'
+import type { SubTypeItem } from '@/types/hot'
 // 热门推荐页 标题和url
 const hotMap = [
   { type: '1', title: '特惠推荐', url: '/hot/preference' },
@@ -16,41 +21,105 @@ const query = defineProps<{
 const currHotMap = hotMap.find((hot) => hot.type === query.type)
 // 动态设置标题
 uni.setNavigationBarTitle({ title: currHotMap!.title })
+
+// 推荐封面图
+const bannerPicture = ref('')
+// 推荐导航选项二选一 合并类型SubTypeItem与finish字段
+const subTypes = ref<(SubTypeItem & { finish?: boolean })[]>([])
+// 高亮的下标
+const activeIndex = ref(0)
+// 获取热门推荐数据
+const getHotRecommendData = async () => {
+  const res = await getHotRecommendAPI(currHotMap!.url, {
+    page: 1,
+    pageSize: 10,
+  })
+  console.log(res.result)
+  bannerPicture.value = res.result.bannerPicture
+  subTypes.value = res.result.subTypes
+}
+
+// 页面加载时调用
+onLoad(() => {
+  getHotRecommendData()
+})
+
+// 触底刷新
+const onScrollToLower = async () => {
+  // 获取当前推荐导航选项 这是一个浅拷贝 拿到了subType.value[xxx]的引用地址
+  const currSubType = subTypes.value[activeIndex.value]
+  // console.log(currSubType) 浅拷贝
+  // 判断当前页码小于总页码
+  if (currSubType.goodsItems.page < currSubType.goodsItems.pages) {
+    // 当前页码累加
+    currSubType.goodsItems.page++
+  } else {
+    currSubType.finish = true
+    return uni.showToast({ icon: 'none', title: '没有更多数据了~' })
+    // 没有数据就返回 不再执行后面发送请求
+  }
+  // 发送请求追加数据
+  const res = await getHotRecommendAPI(currHotMap!.url, {
+    // 传入currSubType.id 拿到当前导航类型下的goodsItems的数据
+    subType: currSubType.id,
+    page: currSubType.goodsItems.page,
+    pageSize: currSubType.goodsItems.pageSize,
+  })
+  // 拿到新的数据
+  const newSubType = res.result.subTypes[activeIndex.value]
+  // 追加数据
+  currSubType.goodsItems.items.push(...newSubType.goodsItems.items)
+}
 </script>
 
 <template>
   <view class="viewport">
     <!-- 推荐封面图 -->
     <view class="cover">
-      <image :src="currHotMap!.url"></image>
+      <!-- mode 14种图片裁剪、缩放的模式 widthFix：宽度不变，高度自动变化，保持原图宽高比不变 -->
+      <image mode="widthFix" :src="bannerPicture"></image>
     </view>
-    <!-- 推荐选项 -->
+    <!-- 推荐导航选项 -->
     <view class="tabs">
-      <text class="text active">抢先尝鲜</text>
-      <text class="text">新品预告</text>
+      <text
+        v-for="(item, index) in subTypes"
+        :key="item.id"
+        class="text"
+        :class="{ active: index === activeIndex }"
+        @tap="activeIndex = index"
+      >
+        {{ item.title }}
+      </text>
     </view>
-    <!-- 推荐列表 -->
-    <scroll-view scroll-y class="scroll-view">
+    <!-- 推荐列表 遍历的几个列表只显示activeIndex === index的一个 -->
+    <scroll-view
+      enable-back-to-top
+      v-for="(item, index) in subTypes"
+      :key="item.id"
+      v-show="activeIndex === index"
+      scroll-y
+      class="scroll-view"
+      @scrolltolower="onScrollToLower"
+    >
       <view class="goods">
         <navigator
           hover-class="none"
           class="navigator"
-          v-for="goods in 10"
-          :key="goods"
-          :url="`/pages/goods/goods?id=`"
+          v-for="goods in item.goodsItems.items"
+          :key="goods.id"
+          :url="`/pages/goods/goods?id=${goods.id}`"
         >
-          <image
-            class="thumb"
-            src="https://yanxuan-item.nosdn.127.net/5e7864647286c7447eeee7f0025f8c11.png"
-          ></image>
-          <view class="name ellipsis">不含酒精，使用安心爽肤清洁湿巾</view>
+          <image class="thumb" :src="goods.picture"></image>
+          <view class="name ellipsis">{{ goods.name }}}</view>
           <view class="price">
             <text class="symbol">¥</text>
-            <text class="number">29.90</text>
+            <text class="number">{{ goods.price }}}</text>
           </view>
         </navigator>
       </view>
-      <view class="loading-text">正在加载...</view>
+      <view class="loading-text">
+        {{ item.finish ? '没有更多数据了~' : '正在加载...' }}
+      </view>
     </scroll-view>
   </view>
 </template>

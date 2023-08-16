@@ -1,5 +1,5 @@
 import { http } from '@/utils/http'
-import type { PageParams } from '@/types/global'
+import type { PageParams } from '@/types/global.d.ts'
 import type { HotResult } from '@/types/hot.d.ts'
 
 // &类型扩展

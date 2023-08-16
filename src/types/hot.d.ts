@@ -10,7 +10,7 @@ export type SubTypeItem = {
   goodsItems: PageResult<GoodsItem>
 }
 
-/** 热门推荐 */
+/** 热门推荐 api请求到的数据 */
 export type HotResult = {
   /** id信息 */
   id: string
