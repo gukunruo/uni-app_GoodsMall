@@ -1,3 +1,5 @@
+import type { GoodsItem } from './global' // 引入通用商品类型
+
 /** 首页-广告区域数据类型 */
 export type BannerItem = {
   /** 跳转链接 */
@@ -36,19 +38,15 @@ export type HotItem = {
 
 /** 猜你喜欢-商品类型
  * GuessItem放到PageResult中替代泛型形成后端返回的类型 然后用于猜你喜欢组件中 */
-export type GuessItem = {
-  /** 商品描述 */
+/* export type GuessItem = {
   desc: string
-  /** 商品折扣 */
   discount: number
-  /** id */
   id: string
-  /** 商品名称 */
   name: string
-  /** 商品已下单数量 */
   orderNum: number
-  /** 商品图片 */
   picture: string
-  /** 商品价格 */
   price: number
-}
+} */
+
+// 由于global.d.ts中的通用商品类型和这个一致，所以可以直接引入作为GuessItem
+export type GuessItem = GoodsItem
