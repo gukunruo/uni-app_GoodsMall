@@ -31,7 +31,8 @@ const activeIndex = ref(0)
 // 获取热门推荐数据
 const getHotRecommendData = async () => {
   const res = await getHotRecommendAPI(currHotMap!.url, {
-    page: 1,
+    // 技巧：环境变量，开发环境，修改初始页面方便测试分页结束
+    page: import.meta.env.DEV ? 30 : 1,
     pageSize: 10,
   })
   console.log(res.result)
