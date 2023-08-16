@@ -13,6 +13,8 @@ import CustomNavBar from './components/CustomNavBar.vue'
 // 引入未全局引入的组件
 import CategoryPanel from './components/CategoryPanel.vue'
 import HotPanel from './components/HotPanel.vue'
+// 引入骨架屏组件
+import PageSkeleton from './components/PageSkeleton.vue'
 
 // 获取轮播图数据
 const bannerList = ref<BannerItem[]>([])
@@ -34,13 +36,6 @@ const getHomeHotData = async () => {
   hotList.value = res.result
 }
 // 猜你喜欢组件不需要在此处封装调用 直接在组件内部调用更好 因为大部分数据复用时是相同的
-
-// 加载时调用api
-onLoad(() => {
-  getHomeBannerData()
-  getCategoryData()
-  getHomeHotData()
-})
 
 // 拿到guess组件 guess组件没有类型校验
 const guessRef = ref<HwGuessInstance>()
@@ -68,6 +63,22 @@ const onRefresherrefresh = async () => {
   // 需要我们主动关闭动画，否则动画不会消失
   isTriggered.value = false
 }
+
+// 是否加载中标记 用于显示骨架屏还是加载成功的组件
+const isLoading = ref<boolean>(false)
+
+// 加载时调用api
+onLoad(async () => {
+  // 加载时显示骨架屏
+  isLoading.value = true
+  // getHomeBannerData()
+  // getCategoryData()
+  // getHomeHotData()
+  // 需要升级成异步操作
+  await Promise.all([getHomeBannerData(), getCategoryData(), getHomeHotData()])
+  // 加载完成显示骨架屏
+  isLoading.value = false
+})
 </script>
 
 <template>
@@ -83,14 +94,18 @@ const onRefresherrefresh = async () => {
     class="scrollView"
     scroll-y
   >
-    <!-- 引入自动全局引入的轮播图组件
-      注意：自动导入的组件没有定义ts类型，需要我们进行类型声明 -->
-    <HwSwiper :list="bannerList" />
-    <!-- 下面的组件不是Hw开头的组件，需要自行引入 -->
-    <CategoryPanel :list="categoryList" />
-    <HotPanel :list="hotList" />
-    <!-- 引入自动引入组件 猜你喜欢 -->
-    <HwGuess ref="guessRef" />
+    <!-- 数据没加载时显示骨架屏 -->
+    <PageSkeleton v-if="isLoading" />
+    <template v-else>
+      <!-- 引入自动全局引入的轮播图组件
+        注意：自动导入的组件没有定义ts类型，需要我们进行类型声明 -->
+      <HwSwiper :list="bannerList" />
+      <!-- 下面的组件不是Hw开头的组件，需要自行引入 -->
+      <CategoryPanel :list="categoryList" />
+      <HotPanel :list="hotList" />
+      <!-- 引入自动引入组件 猜你喜欢 -->
+      <HwGuess ref="guessRef" />
+    </template>
   </scroll-view>
 </template>
 
