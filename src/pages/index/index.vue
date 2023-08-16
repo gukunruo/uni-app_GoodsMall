@@ -49,16 +49,43 @@ const onScrolltolower = () => {
   // 调用guess组件的getMore方法
   guessRef.value?.getMore()
 }
+
+// 当前下拉刷新状态 可以控制动画
+const isTriggered = ref<boolean>(false)
+// 自定义下拉刷新被触发
+const onRefresherrefresh = async () => {
+  // 开始动画
+  isTriggered.value = true
+  // 下拉重置猜你喜欢数据
+  guessRef.value?.resetData()
+  // 重新发起请求 发起多个异步请求 搭配promise.all去使用
+  await Promise.all([
+    getHomeBannerData(),
+    getCategoryData(),
+    getHomeHotData(),
+    guessRef.value?.getMore(),
+  ])
+  // 需要我们主动关闭动画，否则动画不会消失
+  isTriggered.value = false
+}
 </script>
 
 <template>
   <!-- 此时与默认导航栏冲突，需要在pages.json中进行配置 -->
   <CustomNavBar />
   <!-- 设置滚动容器 添加滚动触底事件scrolltolower -->
-  <scroll-view @scrolltolower="onScrolltolower" class="scrollView" scroll-y>
+  <scroll-view
+    enable-back-to-top
+    refresher-enabled
+    @refresherrefresh="onRefresherrefresh"
+    :refresher-triggered="isTriggered"
+    @scrolltolower="onScrolltolower"
+    class="scrollView"
+    scroll-y
+  >
     <!-- 引入自动全局引入的轮播图组件
       注意：自动导入的组件没有定义ts类型，需要我们进行类型声明 -->
-    <HwSwiper :List="bannerList" />
+    <HwSwiper :list="bannerList" />
     <!-- 下面的组件不是Hw开头的组件，需要自行引入 -->
     <CategoryPanel :list="categoryList" />
     <HotPanel :list="hotList" />

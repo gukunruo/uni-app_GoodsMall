@@ -8,18 +8,18 @@ import { getHomeGoodsGuessLikeAPI } from '@/services/home'
 // Required<PageParams> 替换 PageParams 用于解决 pageParams.page++ 报错问题
 // 因为pageParams中的page和pageSize后有"?"可选符，在这里需要用Required改为必选[去掉了?]
 const pageParams: Required<PageParams> = {
-  page: 1,
+  page: 38,
   pageSize: 10,
 }
 // 是否结束标记
-let finish = ref<boolean>(false)
+// let finish = ref<boolean>(false)
 // 存储列表数据
 let guessList = ref<GuessItem[]>([])
 const getHomeGoodsGuessLikeData = async () => {
   // 数据加载完判断
-  if (finish.value == true) {
+  /* if (finish.value == true) {
     return uni.showToast({ icon: 'none', title: '没有更多数据~' })
-  }
+  } */
   const res = await getHomeGoodsGuessLikeAPI(pageParams)
   // 这里的res.result不止包含列表的数据 还包含counts、page[当前]、pages[总页数]、pageSize
   // guessList.value = res.result.items
@@ -30,8 +30,16 @@ const getHomeGoodsGuessLikeData = async () => {
     // 页码累加，再次请求时获取新的数据
     pageParams.page++ // 必须在上面改为必选 因为可选类型没数据为undefined，不能++
   } else {
-    finish.value = true
+    // finish.value = true
+    pageParams.page = 1
   }
+}
+// 重置数据 用于暴露给父组件 用于下拉刷新时重置刷新之后再获取数据
+const resetData = () => {
+  // 我觉得page不改为1更合适【每次刷新能拿到新数据】 但是一直不变又不合适，刷新次数多了数据会刷新完
+  // pageParams.page = 1
+  guessList.value = []
+  // finish.value = false
 }
 
 // 组件挂载完毕时调用
@@ -40,6 +48,7 @@ onMounted(() => {
 })
 // 暴露方法
 defineExpose({
+  resetData,
   getMore: getHomeGoodsGuessLikeData,
 })
 </script>
@@ -68,7 +77,8 @@ defineExpose({
     </navigator>
   </view>
   <!-- 加载显示文字 -->
-  <view class="loading-text">{{ finish ? '没有更多数据~' : '正在加载...' }}</view>
+  <!-- <view class="loading-text">{{ finish ? '没有更多数据~' : '正在加载...' }}</view> -->
+  <view class="loading-text"> 正在加载...</view>
 </template>
 
 <style lang="scss">
