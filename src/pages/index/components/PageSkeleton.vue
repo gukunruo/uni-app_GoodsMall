@@ -2,7 +2,7 @@
 <template name="skeleton">
   <view is="components/HwSwiper">
     <view class="carousel HwSwiper--carousel">
-      <!-- <swiper circular="true" interval="3000" current="0" autoplay="false">
+      <swiper circular="true" interval="3000" current="0" autoplay="false">
         <swiper-item
           style="
             position: absolute;
@@ -15,7 +15,7 @@
             <image class="image HwSwiper--image sk-image" mode="aspectFill"></image>
           </navigator>
         </swiper-item>
-      </swiper> -->
+      </swiper>
       <!-- App 端控制台未知报错，删除 swiper 错误消失？ -->
       <view class="indicator HwSwiper--indicator">
         <text class="dot HwSwiper--dot active HwSwiper--active"></text>
