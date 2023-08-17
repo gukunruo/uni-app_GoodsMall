@@ -83,6 +83,7 @@ const onSubmit = async () => {
       </view>
 
       <!-- 小程序端授权登录 -->
+      <!-- #ifdef MP-WEIXIN -->
       <!-- 文档：open-type=getPhoneNumber获取用户手机号，可以从@getphonenumber回调中获取到用户信息 -->
       <button
         class="button phone"
@@ -94,15 +95,18 @@ const onSubmit = async () => {
         <text class="icon icon-phone"></text>
         手机号快捷登录
       </button>
+      <!-- #endif -->
       <view class="extra">
         <view class="caption">
           <text>其他登录方式</text>
         </view>
         <view class="options">
           <button class="icon icon-phone" @tap="onGetphonenumberSimple">模拟快捷登录</button>
+          <!-- #ifdef MP-WEIXIN -->
           <button class="icon icon-phone" @tap="changeMethod">
             {{ isShowForms ? '手机号快捷登录' : '账号密码登录' }}
           </button>
+          <!-- #endif -->
         </view>
       </view>
       <view class="tips">
