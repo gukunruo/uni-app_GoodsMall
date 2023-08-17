@@ -28,6 +28,8 @@
 		{
 			"path": "pages/my/my",
 			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
 				"navigationBarTitleText": "我的"
 			}
 		},
@@ -102,5 +104,33 @@
 				"selectedIconPath": "static/tabs/user_selected.png"
 			}
 		]
-	}
+	},
+  // 分包加载规则【设置页面、个人信息页面、地址管理页面 以及 四个订单管理的页面】
+	"subPackages": [
+		{
+      // 子包根目录
+			"root": "pagesMember",
+      // 页面路径和窗口表现
+			"pages": [
+				{
+					"path": "setting/setting",
+					"style": {
+						"navigationBarTitleText": "设置"
+					}
+				}
+			]
+		}
+	],
+  // 分包预下载规则 配置preloadRule后，在进入小程序某个页面时，由框架自动预下载可能需要的分包，提升进入后续分包页面时的启动速度
+  "preloadRule": {
+    // 页面路径及对应配置
+    "pages/my/my": {
+      // 指定网络下下载
+      "network": "all",
+      // 预下载的文件
+      "packages": [
+        "pagesMember"
+      ]
+    }
+  }
 }
