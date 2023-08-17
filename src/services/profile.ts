@@ -12,7 +12,7 @@ export const getMemberProfileAPI = () => {
 
 /**
  * 修改个人信息
- * @param data 请求体参数
+ * @param data 请求体参数  其中token已经在请求拦截器添加了
  */
 export const putMemberProfileAPI = (data: ProfileParams) => {
   return http<ProfileDetail>({

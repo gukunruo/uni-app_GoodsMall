@@ -81,6 +81,48 @@ const uploadFile = (file: string) => {
     },
   })
 }
+
+// 修改性别
+const onGenderChange: UniHelper.RadioGroupOnChange = (ev) => {
+  // 更新数据
+  profile.value.gender = ev.detail.value as Gender
+}
+
+// 修改生日 DatePickerOnChange其中的Data用于区别具体模式为日期
+const onBirthdayChange: UniHelper.DatePickerOnChange = (ev) => {
+  // 更新数据
+  profile.value.birthday = ev.detail.value
+}
+
+// 修改城市
+let fullLocationCode: [string, string, string] = ['', '', '']
+// RegionPickerOnChange其中的Data用于区别具体模式为区域
+const onFullLocationChange: UniHelper.RegionPickerOnChange = (ev) => {
+  // 拿到新的数据修改前端界面 拿到数组数据拼接成地址的字符串
+  profile.value.fullLocation = ev.detail.value.join(' ')
+  // 提交后端更新 将code发送给服务器提交更新
+  fullLocationCode = ev.detail.code!
+}
+// 点击保存提交表单
+const onSubmit = async () => {
+  // 表单数据被收集到了profile上
+  const { nickname, gender, birthday } = profile.value
+  const res = await putMemberProfileAPI({
+    nickname,
+    gender,
+    birthday,
+    profession: profile.value.profession,
+    provinceCode: fullLocationCode[0],
+    cityCode: fullLocationCode[1],
+    countyCode: fullLocationCode[2],
+  })
+  // 更新Store昵称 用于在【我的】页面展示
+  memberStore.profile!.nickname = res.result.nickname
+  uni.showToast({ icon: 'success', title: '保存成功' })
+  setTimeout(() => {
+    uni.navigateBack()
+  }, 400)
+}
 </script>
 
 <template>
@@ -154,7 +196,7 @@ const uploadFile = (file: string) => {
         </view>
         <view class="form-item">
           <text class="label">职业</text>
-          <input class="input" type="text" placeholder="请填写职业" :value="profile?.profession" />
+          <input class="input" type="text" placeholder="请填写职业" v-model="profile.profession" />
         </view>
       </view>
       <!-- 提交按钮 -->
