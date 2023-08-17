@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import { postLoginWxMinAPI, postLoginWxMinSimpleAPI } from '@/services/login'
+import { postLoginWxMinAPI, postLoginWxMinSimpleAPI, postLoginAPI } from '@/services/login'
 import { useMemberStore } from '@/stores'
 import type { LoginResult } from '@/types/member'
 
@@ -53,6 +53,11 @@ const form = ref({
   account: '13123456789',
   password: '',
 })
+// 表单提交
+const onSubmit = async () => {
+  const res = await postLoginAPI(form.value)
+  loginSuccess(res.result)
+}
 </script>
 
 <template>
@@ -67,15 +72,14 @@ const form = ref({
       <view v-show="isShowForms" class="PasswordLogin">
         <uni-forms label-align="center">
           <!-- name属性用于表单验证时使用 -->
-          <uni-forms-item class="formsItem" name="name">
-            <uni-easyinput type="text" placeholder="请输入用户名" />
+          <uni-forms-item class="formsItem" name="account">
+            <uni-easyinput v-model="form.account" type="text" placeholder="请输入用户名" />
           </uni-forms-item>
           <uni-forms-item name="name">
-            <uni-easyinput type="password" placeholder="请输入密码" />
-            <!--  v-model="form.account" -->
+            <uni-easyinput v-model="form.password" type="password" placeholder="请输入密码" />
           </uni-forms-item>
         </uni-forms>
-        <button class="buttonLogin phone">登录</button>
+        <button @tap="onSubmit" class="buttonLogin phone">登录</button>
       </view>
 
       <!-- 小程序端授权登录 -->
@@ -101,7 +105,10 @@ const form = ref({
           </button>
         </view>
       </view>
-      <view class="tips">登录/注册即视为你同意《服务条款》和《小兔鲜儿隐私协议》</view>
+      <view class="tips">
+        <checkbox value="cb" checked="false" />
+        <text>登录/注册即视为你同意《服务条款》和《小兔鲜儿隐私协议》</text>
+      </view>
     </view>
   </view>
 </template>

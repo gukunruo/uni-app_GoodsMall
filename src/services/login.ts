@@ -32,3 +32,20 @@ export const postLoginWxMinSimpleAPI = (phoneNumber: string) => {
     },
   })
 }
+
+// 登录参数 账号密码
+type LoginParams = {
+  account: string
+  password: string
+}
+/**
+ * 小程序登录_用户名+密码
+ * @param data 请求参数
+ */
+export const postLoginAPI = (data: LoginParams) => {
+  return http<LoginResult>({
+    method: 'POST',
+    url: '/login',
+    data,
+  })
+}
