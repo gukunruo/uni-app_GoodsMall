@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useMemberStore } from '@/stores'
+import { useMemberStore } from '@/stores/modules/member'
 import { useGuessList } from '@/composables/HwGuess'
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
@@ -49,9 +49,9 @@ const { guessRef, onScrolltolower } = useGuessList()
           <navigator url="/pages/login/login" hover-class="none" class="nickname">
             未登录
           </navigator>
-          <view class="extra">
+          <navigator url="/pages/login/login" class="extra">
             <text class="tips">点击登录账号</text>
-          </view>
+          </navigator>
         </view>
       </view>
       <navigator class="settings" url="/pagesMember/setting/setting" hover-class="none">
