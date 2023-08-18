@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
-import { getMemberProfileAPI, putMemberProfileAPI } from '@/services/profile.ts'
+import { getMemberProfileAPI, putMemberProfileAPI } from '@/services/profile'
 import type { ProfileDetail, Gender } from '@/types/member'
 import { useMemberStore } from '@/stores'
 // 引入自定义日期格式化的函数
@@ -17,8 +17,8 @@ const getMemberProfileData = async () => {
   profile.value = res.result
   // console.log(res.result)
   // 同步仓库的头像和昵称 用于展示【我的】页面
-  memberStore.profile.avatar = res.result.avatar
-  memberStore.profile.nickname = res.result.nickname
+  memberStore.profile!.avatar = res.result.avatar
+  memberStore.profile!.nickname = res.result.nickname
 }
 onLoad(() => {
   getMemberProfileData()
