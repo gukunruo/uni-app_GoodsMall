@@ -6,6 +6,12 @@ import type { GoodsResult } from '@/types/goods'
 // 引入子组件
 import AddressPanel from './components/AddressPanel.vue'
 import ServicePanel from './components/ServicePanel.vue'
+// 引入sku的ts类型
+import type {
+  SkuPopupLocaldata,
+  SkuPopupEvent,
+  SkuPopupInstance,
+} from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
@@ -20,6 +26,33 @@ const goods = ref<GoodsResult>()
 const getGoodsByIdData = async () => {
   const res = await getGoodsByIdAPI(query.id)
   goods.value = res.result
+  // 将后端返回数据处理成SKU-Popup组件所需格式
+  localdata.value = {
+    _id: res.result.id,
+    name: res.result.name,
+    // 商品图片 拿组图中的第一个作为即可
+    goods_thumb: res.result.mainPictures[0],
+    // 商品规格列表 通过数组映射map对数据进行处理
+    spec_list: res.result.specs.map((v) => {
+      return {
+        name: v.name,
+        list: v.values,
+      }
+    }),
+    // 商品Sku列表
+    sku_list: res.result.skus.map((v) => {
+      return {
+        _id: v.id,
+        goods_id: res.result.id,
+        goods_name: res.result.name,
+        image: v.picture,
+        price: v.price * 100, // 注意：需要乘以 100[插件的问题]
+        stock: v.inventory,
+        // sku规格组成
+        sku_name_arr: v.specs.map((vv) => vv.valueName),
+      }
+    }),
+  }
 }
 
 // 页面加载
@@ -63,9 +96,32 @@ const openPopup = (name: typeof popupName.value) => {
   // 调用popup组件实例的open事件
   popup.value?.open()
 }
+
+// 是否显示Sku
+const isShowSku = ref(false)
+// 商品信息
+const localdata = ref({} as SkuPopupLocaldata)
+
+// 按钮模式
+enum SkuMode {
+  Both = 1,
+  Cart = 2,
+  Buy = 3,
+}
+const mode = ref<SkuMode>(SkuMode.Cart)
+// 打开SKU弹窗修改按钮模式
+const openSkuPopup = (val: SkuMode) => {
+  // 显示SKU弹窗
+  isShowSku.value = true
+  // 修改按钮模式
+  mode.value = val
+}
 </script>
 
 <template>
+  <!-- SKU弹窗组件 v-show控制显示隐藏 localdata商品信息本地数据源[通过数据源渲染数据] -->
+  <vk-data-goods-sku-popup v-model="isShowSku" :localdata="localdata" />
+
   <scroll-view scroll-y class="viewport">
     <!-- 基本信息 -->
     <view class="goods">
@@ -98,7 +154,7 @@ const openPopup = (name: typeof popupName.value) => {
 
       <!-- 操作面板 -->
       <view class="action">
-        <view class="item arrow">
+        <view @tap="openSkuPopup(SkuMode.Both)" class="item arrow">
           <text class="label">选择</text>
           <text class="text ellipsis"> 请选择商品规格 </text>
         </view>
