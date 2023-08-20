@@ -75,13 +75,19 @@ const onOrderSubmit = async () => {
   if (!selectedAddress.value?.id) {
     return uni.showToast({ icon: 'none', title: '请选择收货地址' })
   }
-  // 发送请求
+  // 发送提交订单请求
   const res = await postMemberOrderAPI({
+    // 地址id
     addressId: selectedAddress.value?.id,
+    // 订单备注
     buyerMessage: buyerMessage.value,
+    // 配送时间信息
     deliveryTimeType: activeDelivery.value.type,
+    // 商品集合
     goods: orderPre.value!.goods.map((v) => ({ count: v.count, skuId: v.skuId })),
+    // 支付渠道 1支付宝、2微信[在线支付]
     payChannel: 2,
+    // 支付方式，1为在线支付，2为货到付款
     payType: 1,
   })
   // 关闭当前页面，跳转到订单详情，传递订单id
