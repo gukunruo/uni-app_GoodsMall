@@ -4,7 +4,7 @@ import { Component } from '@uni-helper/uni-app-types'
 export type SkuPopup = Component<SkuPopupProps>
 
 /** SKU 弹出层实例 */
-export type SkuPopupInstance = InstanceType<SkuPopup>
+export type SkuPopupInstanceType = InstanceType<SkuPopup>
 
 /** SKU 弹出层属性 */
 export type SkuPopupProps = {

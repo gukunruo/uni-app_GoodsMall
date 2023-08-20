@@ -33,8 +33,16 @@
 				"navigationBarTitleText": "我的"
 			}
 		},
+		// tabbar版购物车
 		{
 			"path": "pages/cart/cart",
+			"style": {
+				"navigationBarTitleText": "购物车"
+			}
+		},
+		// 页面版购物车 二者的不同在下面"tabbar"配置项的"list"中区别
+		{
+			"path": "pages/cart/cartPage",
 			"style": {
 				"navigationBarTitleText": "购物车"
 			}
@@ -135,8 +143,25 @@
 				{
 					"path": "address-form/address-form",
 					"style": {
-            // 动态设置页面标题
+						// 动态设置页面标题
 						"navigationBarTitleText": ""
+					}
+				}
+			]
+		},
+		{
+			"root": "pagesOrder",
+			"pages": [
+				{
+					"path": "create/create",
+					"style": {
+						"navigationBarTitleText": "填写订单"
+					}
+				},
+				{
+					"path": "detail/detail",
+					"style": {
+						"navigationBarTitleText": "订单详情"
 					}
 				}
 			]

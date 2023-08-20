@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
-import { getMemberAddressListAPI, deleteMemberAddressByIdAPI } from '@/services/address.ts'
+import { getMemberAddressListAPI, deleteMemberAddressByIdAPI } from '@/services/address'
 import type { AddressItem } from '@/types/address'
 import { useAddressStore } from '@/stores/modules/address'
 
@@ -37,6 +37,7 @@ const onDeleteAddress = (id: string) => {
 const onChangeAddress = (item: AddressItem) => {
   // 修改地址
   const addressStore = useAddressStore()
+  // 调用仓库中的修改地址方法实现组件间数据传递 地址管理界面修改地址，然后在订单界面拿到仓库中修改的地址即可
   addressStore.changeSelectedAddress(item)
   // 返回上一页
   uni.navigateBack()
@@ -59,7 +60,9 @@ const onChangeAddress = (item: AddressItem) => {
                 <text v-if="item.isDefault" class="badge">默认</text>
               </view>
               <view class="locate">{{ item.fullLocation }} {{ item.address }}</view>
-              <!-- H5 端需添加 .prevent 阻止链接的默认行为 -->
+              <!-- H5 端需添加
+                  .stop阻止冒泡【点击修改时同时触发了onChangeAddress，我们所以要进行阻止】
+                .prevent阻止链接的默认行为 -->
               <navigator
                 class="edit"
                 hover-class="none"

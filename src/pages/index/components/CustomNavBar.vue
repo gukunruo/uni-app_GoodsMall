@@ -7,7 +7,7 @@ const { safeAreaInsets } = uni.getSystemInfoSync() // 带Sync是同步api 不带
 
 <template>
   <!-- 使用的都是uni-app中的组件 设置导航栏距离上部动态距离paddingTop -->
-  <view class="navbar" :style="{ paddingTop: safeAreaInsets?.top + 10 + 'px' }">
+  <view class="navbar" :style="{ paddingTop: safeAreaInsets!.top + 10 + 'px' }">
     <!-- logo文字 -->
     <view class="logo">
       <image class="logo-image" src="@/static/images/优选好物.png"></image>

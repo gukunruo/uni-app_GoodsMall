@@ -10,8 +10,9 @@ import ServicePanel from './components/ServicePanel.vue'
 import type {
   SkuPopupLocaldata,
   SkuPopupEvent,
-  SkuPopupInstance,
+  SkuPopupInstanceType,
 } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
+import { postMemberCartAPI } from '@/services/cart'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
@@ -102,13 +103,13 @@ const isShowSku = ref(false)
 // 商品信息
 const localdata = ref({} as SkuPopupLocaldata)
 
-// 按钮模式
+// 枚举类型 语义化按钮模式[因为代码中模式为数字] 用于不同情况下展示不同的按钮
 enum SkuMode {
-  Both = 1,
-  Cart = 2,
-  Buy = 3,
+  Both = 1, // 加入购物车和立即购买都显示
+  Cart = 2, // 购物车
+  Buy = 3, // 立即购买
 }
-const mode = ref<SkuMode>(SkuMode.Cart)
+const mode = ref<SkuMode>(SkuMode.Both)
 // 打开SKU弹窗修改按钮模式
 const openSkuPopup = (val: SkuMode) => {
   // 显示SKU弹窗
@@ -116,11 +117,48 @@ const openSkuPopup = (val: SkuMode) => {
   // 修改按钮模式
   mode.value = val
 }
+// SKU组件实例
+const skuPopupRef = ref<SkuPopupInstanceType>()
+// 计算被选中的值 计算属性：要用的属性是通过已存在的属性计算得来。计算属性是原先不存在的
+const selectArrText = computed(() => {
+  // 如果没有拿到数据selectArr是['','']空字符数组 join之后变成一个空字符串，需要trim去掉空格 才能选择"||"后的字符串
+  return skuPopupRef.value?.selectArr?.join(' ').trim() || '请选择商品规格'
+})
+// 加入购物车事件
+const onAddCart = async (ev: SkuPopupEvent) => {
+  // 提交到购物车 对应sku id和对应的数量
+  await postMemberCartAPI({ skuId: ev._id, count: ev.buy_num })
+  uni.showToast({ title: '添加成功' })
+  isShowSku.value = false
+}
+// 立即购买
+const onBuyNow = (ev: SkuPopupEvent) => {
+  uni.navigateTo({ url: `/pagesOrder/create/create?skuId=${ev._id}&count=${ev.buy_num}` })
+}
 </script>
 
 <template>
-  <!-- SKU弹窗组件 v-show控制显示隐藏 localdata商品信息本地数据源[通过数据源渲染数据] -->
-  <vk-data-goods-sku-popup v-model="isShowSku" :localdata="localdata" />
+  <!-- SKU弹窗组件
+    v-show控制显示隐藏 localdata商品信息本地数据源[通过数据源渲染数据] mode 展示按钮模式
+    add-cart-background-color与下面那个可以指定当前弹窗按钮的颜色[解决和系统按钮颜色不一致问题]
+
+    通过拿到组件实例 将组件中拿到的商品信息展示在商品详情页面【选择】中
+    -->
+  <vk-data-goods-sku-popup
+    v-model="isShowSku"
+    :localdata="localdata"
+    :mode="mode"
+    add-cart-background-color="#FFA868"
+    buy-now-background-color="#27BA9B"
+    ref="skuPopupRef"
+    :actived-style="{
+      color: '#27BA9B',
+      borderColor: '#27BA9B',
+      backgroundColor: '#E9F8F5',
+    }"
+    @add-cart="onAddCart"
+    @buy-now="onBuyNow"
+  />
 
   <scroll-view scroll-y class="viewport">
     <!-- 基本信息 -->
@@ -156,7 +194,7 @@ const openSkuPopup = (val: SkuMode) => {
       <view class="action">
         <view @tap="openSkuPopup(SkuMode.Both)" class="item arrow">
           <text class="label">选择</text>
-          <text class="text ellipsis"> 请选择商品规格 </text>
+          <text class="text ellipsis"> {{ selectArrText }} </text>
         </view>
         <view @tap="openPopup('address')" class="item arrow">
           <text class="label">送至</text>
@@ -224,13 +262,16 @@ const openSkuPopup = (val: SkuMode) => {
       <button class="icons-button" open-type="contact">
         <text class="icon-handset"></text>客服
       </button>
-      <navigator class="icons-button" url="/pages/cart/cart" open-type="switchTab">
+      <!-- 指定navigation的open-type属性[跳转方式]
+        tabbar页面需要搭配switchTab方式
+        这里是非tabbar直接配置成普通的navigate配置即可 -->
+      <navigator class="icons-button" url="/pages/cart/cartPage" open-type="navigate">
         <text class="icon-cart"></text>购物车
       </navigator>
     </view>
     <view class="buttons">
-      <view class="addcart"> 加入购物车 </view>
-      <view class="buynow"> 立即购买 </view>
+      <view @tap="openSkuPopup(SkuMode.Cart)" class="addcart"> 加入购物车 </view>
+      <view @tap="openSkuPopup(SkuMode.Buy)" class="buynow"> 立即购买 </view>
     </view>
   </view>
 
