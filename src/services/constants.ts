@@ -1,3 +1,4 @@
+// 存放订单常量数据
 /** 订单状态枚举 */
 export enum OrderState {
   /** 待付款 */

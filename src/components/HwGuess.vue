@@ -51,6 +51,11 @@ defineExpose({
   resetData,
   getMore: getHomeGoodsGuessLikeData,
 })
+
+// 如果加载不出来 点击加载文字加载更多
+const loadMore = () => {
+  getHomeGoodsGuessLikeData()
+}
 </script>
 
 <template>
@@ -78,7 +83,7 @@ defineExpose({
   </view>
   <!-- 加载显示文字 -->
   <!-- <view class="loading-text">{{ finish ? '没有更多数据~' : '正在加载...' }}</view> -->
-  <view class="loading-text"> 正在加载...</view>
+  <view class="loading-text" @tap="loadMore"> 正在加载...</view>
 </template>
 
 <style lang="scss">

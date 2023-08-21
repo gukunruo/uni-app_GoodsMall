@@ -69,7 +69,7 @@ const { guessRef, onScrolltolower } = useGuessList()
       </view>
       <!-- 订单第二层 -->
       <view class="section">
-        <!-- 四个订单信息 -->
+        <!-- 四个订单信息 跳转时传递参数type，对应订单的状态选项 -->
         <navigator
           v-for="item in orderTypes"
           :key="item.type"
@@ -80,8 +80,10 @@ const { guessRef, onScrolltolower } = useGuessList()
         >
           {{ item.text }}
         </navigator>
-        <!-- 售后 -->
+        <!-- 客服 -->
+        <!-- #ifdef MP-WEIXIN -->
         <button class="contact icon-handset" open-type="contact">售后</button>
+        <!-- #endif -->
       </view>
     </view>
     <!-- 猜你喜欢 -->

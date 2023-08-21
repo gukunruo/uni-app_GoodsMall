@@ -12,6 +12,7 @@ const changeMethod = () => {
   isShowForms.value = !isShowForms.value
 }
 
+// #ifdef MP-WEIXIN
 // MP-WEIXIN 获取 code 登录凭证
 let code = ''
 onLoad(async () => {
@@ -26,6 +27,7 @@ const onGetphonenumber: UniHelper.ButtonOnGetphonenumber = async (event) => {
   const res = await postLoginWxMinAPI({ code, encryptedData, iv })
   loginSuccess(res.result)
 }
+// #endif
 
 // 模拟手机号码快捷登录（开发练习，因为手机号登录不对个人用户开放）
 const onGetphonenumberSimple = async () => {
