@@ -42,7 +42,7 @@ const { guessRef, onScrolltolower } = useGuessList()
           <image
             class="avatar gray"
             mode="aspectFill"
-            src="http://yjy-xiaotuxian-dev.oss-cn-beijing.aliyuncs.com/picture/2021-04-06/db628d42-88a7-46e7-abb8-659448c33081.png"
+            src="@/static/images/未登录avatar.png"
           ></image>
         </navigator>
         <view class="meta">
