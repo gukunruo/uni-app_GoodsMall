@@ -3,6 +3,11 @@
 import { ref } from 'vue'
 import OrderList from './components/OrderList.vue'
 
+// 获取页面参数 接收【我的】页面跳转到订单列表时的type参数 对应orderState
+const query = defineProps<{
+  type: string
+}>()
+
 // tabs 数据 左右查看对应订单得状态
 const orderTabs = ref([
   // isRender用于表示是否为选中的list
@@ -12,17 +17,13 @@ const orderTabs = ref([
   { orderState: 3, title: '待收货', isRender: false },
   { orderState: 4, title: '待评价', isRender: false },
 ])
-// 获取页面参数 接收【我的】页面跳转到订单列表时的type参数 对应orderState
-const query = defineProps<{
-  type: string
-}>()
 
 // 高亮下标
 const activeIndex = ref(
   // findIndex查找方法 查找传来的type类型对应的orderState相同的项
   orderTabs.value.findIndex((v) => {
     // Number为了转为number类型
-    v.orderState = Number(query.type)
+    return (v.orderState = Number(query.type))
   }),
 )
 // 设置渲染容器
